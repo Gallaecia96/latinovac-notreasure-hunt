@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f1ec;
+            color: #3a3a3a;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 40%, #d4dfc7 0%, transparent 70%);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -80px;
+            left: -80px;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 60% 50%, #c9d8b6 0%, transparent 70%);
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        #game-container {
+            position: relative;
+            z-index: 1;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 90%;
+            max-width: 460px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .leaf-icon {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .leaf-icon svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7em;
+            color: #2d4a22;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 0.95em;
+            color: #7a8a6e;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background-color: #c5d4a8;
+            margin: 0 auto 30px auto;
+            border-radius: 2px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85em;
+            color: #8a9479;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            padding: 14px 20px;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            background-color: #fafaf7;
+            color: #3a3a3a;
+            border: 1.5px solid #dde4d1;
+            border-radius: 12px;
+            width: 100%;
+            text-align: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]::placeholder {
+            color: #b8c4a8;
+            font-weight: 300;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #8aad6a;
+            box-shadow: 0 0 0 4px rgba(138, 173, 106, 0.12);
+        }
+
+        button {
+            padding: 14px 40px;
+            font-size: 0.95em;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            background-color: #4a7c34;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background-color 0.3s, transform 0.15s, box-shadow 0.3s;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #3d6a2b;
+            box-shadow: 0 6px 20px rgba(74, 124, 52, 0.25);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(74, 124, 52, 0.2);
+        }
+
+        #output-area {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f7f9f3;
+            border-radius: 14px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #output-area p {
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #3a4a30;
+        }
+
+        audio {
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: #b85c5c !important;
+            font-weight: 400;
+        }
+
+        .finale {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4em !important;
+            color: #2d4a22 !important;
+            margin-bottom: 10px;
+        }
+
+        .finale-sub {
+            font-size: 0.95em !important;
+            color: #7a8a6e !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #aab89e;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+
+        <div class="leaf-icon">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 6C32 6 10 18 10 38C10 50 20 58 32 58C32 58 32 40 32 6Z" fill="#8aad6a" opacity="0.6"/>
+                <path d="M32 6C32 6 54 18 54 38C54 50 44 58 32 58C32 58 32 40 32 6Z" fill="#4a7c34" opacity="0.5"/>
+                <line x1="32" y1="14" x2="32" y2="58" stroke="#3d6a2b" stroke-width="1.5" opacity="0.4"/>
+            </svg>
+        </div>
+
+        <h1>Treasure Hunt</h1>
+        <p class="subtitle">Andrea will help you solve the tasks</p>
+
+        <div class="divider"></div>
+
+        <label for="codeInput">Enter your code</label>
+        <input type="text" id="codeInput" placeholder="Type here..." autocomplete="off">
+        <button onclick="checkCode()">Submit</button>
+
+        <div id="output-area"></div>
+    </div>
+
+    <p class="footer">🌱 Permaculture Croatia</p>
+
+    <script>
+        document.getElementById("codeInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkCode();
+            }
+        });
+
+        function checkCode() {
+            let input = document.getElementById("codeInput").value.trim().toLowerCase();
+            let outputArea = document.getElementById("output-area");
+
+            outputArea.style.display = "none";
+            outputArea.innerHTML = "";
+
+            setTimeout(() => {
+                outputArea.style.display = "block";
+
+                if (input === "12344") {
+                    outputArea.innerHTML = `
+                        <p>Conexion established.</p>
+                        <p>Samuel is speaking from 1844...</p>
+                    `;
+                } 
+                else if (input === "morse") {
+                    outputArea.innerHTML = `
+                        <audio controls>
+                            <source src="morse.wav" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                } 
+                else if (input === "4321") {
+                    outputArea.innerHTML = `
+                        <p>4, 3, 2, 1... the game continues! but...</p>
+                        <br>
+                        <p>Beware of the snacks on the path to the bathroom.</p>
+                    `;
+                } 
+                else if (input === "velika") {
+                    outputArea.innerHTML = `
+                        <p>Der nächste Hinweis ist jemand, der keine Dunkelheit bringt.</p>
+                    `;
+                } 
+                else if (input === "clara") {
+                    outputArea.innerHTML = `
+                        <p>Clara must be actually the same age as Ljuba's daughter. She doesn't live in Spain tho, nor in Latinovac.</p>
+                    `;
+                } 
+                else if (input === "pleternica") {
+                    outputArea.innerHTML = `
+                        <p class="finale">🎉 Congratulations!</p>
+                        <p class="finale-sub">You've completed the treasure hunt.<br>Welcome to the end of the trail!</p>
+                    `;
+                } 
+                else {
+                    outputArea.innerHTML = `
+                        <p class="error">Code not recognized. Try again.</p>
+                    `;
+                }
+            }, 50);
+
+            document.getElementById("codeInput").value = "";
+        }
+    </script>
+
+</body>
+</html>
